@@ -649,13 +649,12 @@ function OrionLib:MakeWindow(WindowConfig)
 		MainWindow.Visible = false
 		UIHidden = true
 		
-		-- Icon personalizado
+	-- Icon personalizado
 local ScreenGui = Instance.new("ScreenGui")
 local ImageButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
 
---Properties:
-
+-- Propriedades
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -663,15 +662,21 @@ ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.908554554, 0, 0.0703517571, 0)
+ImageButton.Position = UDim2.new(0.02, 0, 0.0703517571, 0) -- Canto superior ESQUERDO
 ImageButton.Size = UDim2.new(0, 45, 0, 45)
-ImageButton.Image = "rbxassetid://91062721750487"
+ImageButton.Image = "rbxassetid://91062721750487" -- ID que você mandou
 
 UICorner.Parent = ImageButton
 
--- Adicionando a função para pressionar a tecla LeftControl
-ImageButton.MouseButton1Down:connect(function()
-    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.LeftControl, false, game)
+-- Botão abre e fecha o MainWindow
+ImageButton.MouseButton1Click:Connect(function()
+    if MainWindow.Visible then
+        MainWindow.Visible = false
+        UIHidden = true
+    else
+        MainWindow.Visible = true
+        UIHidden = false
+    end
 end)
 		
 -- Icon personalizado
