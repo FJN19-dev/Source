@@ -654,7 +654,8 @@ local ScreenGui = Instance.new("ScreenGui")
 local ImageButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
 
--- Propriedades
+--Properties:
+
 ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -662,21 +663,15 @@ ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0, 20, 0, 20) -- Ajuste onde quiser
+ImageButton.Position = UDim2.new(0.908554554, 0, 0.0703517571, 0)
 ImageButton.Size = UDim2.new(0, 45, 0, 45)
-ImageButton.Image = "rbxassetid://9106272175" -- Confere se o ID está certo
+ImageButton.Image = "rbxassetid://91062721750487"
 
 UICorner.Parent = ImageButton
 
--- Função para abrir/fechar o MainWindow
-ImageButton.MouseButton1Click:Connect(function()
-    if MainWindow.Visible then
-        MainWindow.Visible = false
-        UIHidden = true
-    else
-        MainWindow.Visible = true
-        UIHidden = false
-    end
+-- Adicionando a função para pressionar a tecla LeftControl
+ImageButton.MouseButton1Down:connect(function()
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.LeftControl, false, game)
 end)
 		
 -- Icon personalizado
