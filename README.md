@@ -44,8 +44,6 @@ local function GetIcon(IconName)
 	end
 end   
 
-
-
 local Orion = Instance.new("ScreenGui")
 Orion.Name = "Orion"
 if syn then
@@ -586,7 +584,7 @@ function OrionLib:MakeWindow(WindowConfig)
 			}), "TextDark")
 		}),
 	}), "Second")
-	
+
 	local WindowName = AddThemeObject(SetProps(MakeElement("Label", WindowConfig.Name, 14), {
 		Size = UDim2.new(1, -30, 2, 0),
 		Position = UDim2.new(0, 25, 0, -24),
@@ -651,7 +649,40 @@ function OrionLib:MakeWindow(WindowConfig)
 		MainWindow.Visible = false
 		UIHidden = true
 		
-		-- Icon personalizado
+		-- Aguarda a Orion aparecer no PlayerGui
+local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+local OrionGui = PlayerGui:WaitForChild("Orion") -- Pode mudar o nome se a sua GUI tiver outro nome
+local MainWindow = OrionGui:WaitForChild("Main")
+
+-- Cria o botão flutuante
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+
+ScreenGui.Name = "ToggleOrionButton"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.02, 0, 0.07, 0) -- Canto superior esquerdo
+ImageButton.Size = UDim2.new(0, 45, 0, 45)
+ImageButton.Image = "rbxassetid://91062721750487" -- Seu ID certinho
+
+UICorner.Parent = ImageButton
+
+-- Variável para controlar se a UI está escondida
+local UIHidden = false
+
+-- Função ao clicar no botão
+ImageButton.MouseButton1Click:Connect(function()
+    MainWindow.Visible = not MainWindow.Visible
+    UIHidden = not MainWindow.Visible
+end)
+		
+-- Icon personalizado
 local ScreenGui = Instance.new("ScreenGui")
 local ImageButton = Instance.new("ImageButton")
 local UICorner = Instance.new("UICorner")
@@ -664,24 +695,78 @@ ImageButton.Parent = ScreenGui
 ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.02, 0, 0.0703517571, 0) -- Canto superior ESQUERDO
+ImageButton.Position = UDim2.new(0.145129248, 0, 0.130653262, 0)
 ImageButton.Size = UDim2.new(0, 45, 0, 45)
-ImageButton.Image = "rbxassetid://91062721750487" -- ID que você mandou
+ImageButton.Image = "rbxassetid://91062721750487"
 
 UICorner.Parent = ImageButton
 
--- Botão abre e fecha o MainWindow
-ImageButton.MouseButton1Click:Connect(function()
-    if MainWindow.Visible then
-        MainWindow.Visible = false
-        UIHidden = true
-    else
+-- Função para tornar o botão arrastável
+local UIS = game:GetService("UserInputService")
+local dragging, dragInput, startPos, startMousePos
+local hasMoved = false
+
+ImageButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        hasMoved = false
+        startPos = ImageButton.Position
+        startMousePos = UIS:GetMouseLocation()
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+ImageButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = UIS:GetMouseLocation() - startMousePos
+        if math.abs(delta.X) > 5 or math.abs(delta.Y) > 5 then -- Garante que houve um movimento considerável
+            hasMoved = true
+        end
+        ImageButton.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- Evita que o botão seja ativado se foi arrastado
+ImageButton.MouseButton1Down:Connect(function()
+    task.wait(0.1) -- Pequeno delay para garantir que houve um clique real
+    if not hasMoved then
+        ImageButton:Destroy()
         MainWindow.Visible = true
         UIHidden = false
     end
 end)
-		
 
+
+
+		
+		OrionLib:MakeNotification({
+			Name = "Interface Fechada",
+			Content = "Clique no Icon para abrir a interface",
+			Image = "rbxassetid://91062721750487",
+			Time = 5
+		})
+		WindowConfig.CloseCallback()
+	end)
+
+	AddConnection(UserInputService.InputBegan, function(Input)
+		if Input.KeyCode == Enum.KeyCode.RightShift and UIHidden then
+			MainWindow.Visible = true
+		end
+	end)
 
 	AddConnection(MinimizeBtn.MouseButton1Up, function()
 		if Minimized then
