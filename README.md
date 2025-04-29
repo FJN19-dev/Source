@@ -649,39 +649,7 @@ function OrionLib:MakeWindow(WindowConfig)
 		MainWindow.Visible = false
 		UIHidden = true
 		
-		-- Aguarda a Orion aparecer no PlayerGui
-local PlayerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-local OrionGui = PlayerGui:WaitForChild("Orion") -- Pode mudar o nome se a sua GUI tiver outro nome
-local MainWindow = OrionGui:WaitForChild("Main")
-
--- Cria o botão flutuante
-local ScreenGui = Instance.new("ScreenGui")
-local ImageButton = Instance.new("ImageButton")
-local UICorner = Instance.new("UICorner")
-
-ScreenGui.Name = "ToggleOrionButton"
-ScreenGui.Parent = PlayerGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-ImageButton.Parent = ScreenGui
-ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ImageButton.BorderSizePixel = 0
-ImageButton.Position = UDim2.new(0.02, 0, 0.07, 0) -- Canto superior esquerdo
-ImageButton.Size = UDim2.new(0, 45, 0, 45)
-ImageButton.Image = "rbxassetid://91062721750487" -- Seu ID certinho
-
-UICorner.Parent = ImageButton
-
--- Variável para controlar se a UI está escondida
-local UIHidden = false
-
--- Função ao clicar no botão
-ImageButton.MouseButton1Click:Connect(function()
-    MainWindow.Visible = not MainWindow.Visible
-    UIHidden = not MainWindow.Visible
-end)
-		
+		--
 -- Icon personalizado
 local ScreenGui = Instance.new("ScreenGui")
 local ImageButton = Instance.new("ImageButton")
@@ -1822,5 +1790,13 @@ end
 function OrionLib:Destroy()
 	Orion:Destroy()
 end
+-- Icon personalizado local ScreenGui = Instance.new("ScreenGui") local ImageButton = Instance.new("ImageButton") local UICorner = Instance.new("UICorner")
 
+-- Propriedades ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ImageButton.Parent = ScreenGui ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255) ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0) ImageButton.BorderSizePixel = 0 ImageButton.Position = UDim2.new(0.02, 0, 0.0703517571, 0) -- Canto superior ESQUERDO ImageButton.Size = UDim2.new(0, 45, 0, 45) ImageButton.Image = "rbxassetid://91062721750487" -- ID que você mandou
+
+UICorner.Parent = ImageButton
+
+-- Botão abre e fecha o MainWindow ImageButton.MouseButton1Click:Connect(function() if MainWindow.Visible then MainWindow.Visible = false UIHidden = true else MainWindow.Visible = true UIHidden = false end end)
 return OrionLib
